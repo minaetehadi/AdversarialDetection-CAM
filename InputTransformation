@@ -1,0 +1,39 @@
+from PIL import Image, ImageEnhance, ImageFilter
+import requests
+import matplotlib.pyplot as plt
+import random
+from io import BytesIO
+
+# Load image from a direct URL
+url = "https://www.nps.gov/lacl/learn/nature/images/Image-w-cred-cap_-1200w-_-Brown-Bear-page_-brown-bear-in-fog_2.jpg?maxwidth=1300&maxheight=1300&autorotate=false"
+response = requests.get(url)
+img = Image.open(BytesIO(response.content)).convert("RGB")
+img = img.resize((224, 224))
+
+# Apply transformations
+rotated_img = img.rotate(10)
+
+crop_size = int(0.8 * img.size[0])
+left = random.randint(0, img.size[0] - crop_size)
+top = random.randint(0, img.size[1] - crop_size)
+cropped_img = img.crop((left, top, left + crop_size, top + crop_size)).resize((224, 224))
+
+flipped_img = img.transpose(Image.FLIP_LEFT_RIGHT)
+
+bright_img = ImageEnhance.Brightness(img).enhance(1.5)
+contrast_img = ImageEnhance.Contrast(bright_img).enhance(1.5)
+
+blurred_img = img.filter(ImageFilter.GaussianBlur(radius=2))
+
+# Plotting
+fig, axs = plt.subplots(1, 6, figsize=(20, 4))
+titles = ['Original', 'Rotated', 'Cropped+Resized', 'Flipped', 'Bright+Contrast', 'Blurred']
+images = [img, rotated_img, cropped_img, flipped_img, contrast_img, blurred_img]
+
+for ax, image, title in zip(axs, images, titles):
+    ax.imshow(image)
+    ax.set_title(title)
+    ax.axis('off')
+
+plt.tight_layout()
+plt.show()
