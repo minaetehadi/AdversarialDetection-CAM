@@ -1,5 +1,5 @@
 # AdversarialDetection-CAM
-# Toward Transferable Adversarial Detection via Explainability-Guided Saliency Consistency
+# Explainable Class Activation Maps for Transferable Adversarial Detection
 
 # Requirements
 - Python >= 3.x
